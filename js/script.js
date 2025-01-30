@@ -497,4 +497,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial setup
     updateCarousel();
+
+    // Mobile Menu Toggle
+    function setupMobileMenu() {
+        console.log('Setting up mobile menu...');
+
+        const navLinks = document.querySelector('.nav-links');
+        const navWrapper = document.querySelector('.nav-wrapper');
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+
+        // Debugging checks
+        console.log('Nav Links:', navLinks);
+        console.log('Nav Wrapper:', navWrapper);
+        console.log('Mobile Menu Toggle:', mobileMenuToggle);
+
+        if (!navLinks || !navWrapper || !mobileMenuToggle) {
+            console.error('One or more required elements are missing!');
+            return;
+        }
+
+        function toggleMobileMenu(event) {
+            // Prevent event from propagating
+            event.stopPropagation();
+            
+            console.log('Mobile menu toggle clicked');
+            navLinks.classList.toggle('active');
+            
+            // Toggle menu icon between bars and times
+            const isMenuOpen = navLinks.classList.contains('active');
+            mobileMenuToggle.innerHTML = isMenuOpen 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+            
+            console.log('Menu is now:', isMenuOpen ? 'OPEN' : 'CLOSED');
+        }
+
+        // Remove any existing event listeners to prevent multiple bindings
+        mobileMenuToggle.removeEventListener('click', toggleMobileMenu);
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+
+        // Close mobile menu when a nav link is clicked
+        const navLinksItems = document.querySelectorAll('.nav-links a');
+        navLinksItems.forEach(link => {
+            link.addEventListener('click', function() {
+                console.log('Nav link clicked, closing menu');
+                navLinks.classList.remove('active');
+                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!navWrapper.contains(event.target) && navLinks.classList.contains('active')) {
+                console.log('Clicked outside menu, closing menu');
+                navLinks.classList.remove('active');
+                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        console.log('Mobile menu setup complete');
+    }
+
+    // Ensure mobile menu setup runs after DOM is fully loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMobileMenu);
+    } else {
+        setupMobileMenu();
+    }
 });
