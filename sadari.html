@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사다리 게임</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #input-container {
+      margin-bottom: 20px;
+    }
+    #ladder-container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      position: relative;
+      height: 300px;
+      margin-top: 20px;
+    }
+    .line {
+      width: 2px;
+      background-color: black;
+      height: 100%;
+      margin: 0 10px;
+      position: relative;
+    }
+    .horizontal-line {
+      position: absolute;
+      height: 2px;
+      background-color: black;
+      width: 20px;
+    }
+    .player-ball {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background-color: red;
+      border-radius: 50%;
+      transition: transform 0.2s ease-in-out;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>사다리 게임</h1>
+  <div id="input-container">
+    <label for="player-names">참가자 이름 입력 (쉼표로 구분):</label>
+    <input type="text" id="player-names" placeholder="예: 홍길동, 김철수, 이영희">
+  </div>
+  <button id="start-button">시작하기</button>
+  <div id="ladder-container"></div>
+
+  <script>
+const ladderContainer = document.getElementById('ladder-container');
+const startButton = document.getElementById('start-button');
+const playerNamesInput = document.getElementById('player-names');
+
+let numLines = 0; // 세로줄 개수
+let ladderHeight = 300; // 사다리 높이
+let maxHorizontalLines = 4; // 한 줄당 최대 가로선 개수
+let lineSpacing = 30; // 세로선 간격
+
+// 세로선과 가로선 생성
+function createLadder() {
+  ladderContainer.innerHTML = ''; // 컨테이너 초기화
+
+  const names = playerNamesInput.value.split(',').map(name => name.trim());
+  numLines = names.length;
+
+  if (numLines < 2) {
+    alert("최소 2명 이상의 참가자를 입력하세요.");
+    return false;
+  }
+
+  for (let i = 0; i < numLines; i++) {
+    const line = document.createElement('div');
+    line.classList.add('line');
+    line.style.left = `${i * lineSpacing}px`; // 세로선 위치 설정
+    ladderContainer.appendChild(line);
+
+    // 각 세로선 아래에 플레이어 이름 표시
+    const playerName = document.createElement('div');
+    playerName.textContent = names[i];
+    playerName.style.position = 'absolute';
+    playerName.style.top = '320px'; // 세로선 아래에 이름 표시
+    playerName.style.left = `${i * lineSpacing - 10}px`;
+    ladderContainer.appendChild(playerName);
+  }
+
+  // 가로선 무작위 생성
+  for (let i = 0; i < numLines - 1; i++) {
+    let horizontalCount = Math.floor(Math.random() * maxHorizontalLines) + 1;
+
+    for (let j = 0; j < horizontalCount; j++) {
+      const horizontalLine = document.createElement('div');
+      horizontalLine.classList.add('horizontal-line');
+
+      const randomY = Math.random() * (ladderHeight - 20); // 가로선 위치
+      horizontalLine.style.top = `${randomY}px`;
+      horizontalLine.style.left = `${i * lineSpacing + 1}px`; // 가로선 시작 위치
+
+      ladderContainer.appendChild(horizontalLine);
+    }
+  }
+
+  return true;
+}
+
+// 결과 계산 및 애니메이션 실행
+function calculateAndAnimateResult(startIndex) {
+  let currentIndex = startIndex;
+  let currentY = 0;
+
+  const ball = document.createElement('div');
+  ball.classList.add('player-ball');
+  ball.style.left = `${startIndex * lineSpacing}px`; // 시작 위치 설정
+  ball.style.top = '0px';
+  ladderContainer.appendChild(ball);
+
+  const animationSteps = [];
+
+  for (let y = 0; y < ladderHeight; y += 10) {
+    // 현재 위치에서 가로선이 있는지 확인
+    const horizontalLines = ladderContainer.getElementsByClassName('horizontal-line');
+    let movedHorizontally = false;
+
+    for (let line of horizontalLines) {
+      const lineTop = parseInt(line.style.top);
+      const lineLeft = parseInt(line.style.left);
+
+      if (
+        Math.abs(lineTop - currentY) < 10 && // 가로선과 충돌하면
+        lineLeft === currentIndex * lineSpacing // 현재 세로선과 연결된 가로선인지 확인
+      ) {
+        if (lineLeft % lineSpacing === 0) {
+          currentIndex++; // 오른쪽으로 이동
+        } else {
+          currentIndex--; // 왼쪽으로 이동
+        }
+        movedHorizontally = true;
+        break;
+      }
+    }
+
+    // 애니메이션 단계 추가
+    if (movedHorizontally) {
+      animationSteps.push({ x: currentIndex * lineSpacing, y: currentY });
+    }
+    animationSteps.push({ x: currentIndex * lineSpacing, y: y });
+
+    currentY = y;
+  }
+
+  // 애니메이션 실행
+  let stepIndex = 0;
+  function animateBall() {
+    if (stepIndex >= animationSteps.length) {
+      alert(`도착 위치: ${currentIndex + 1}`);
+      return;
+    }
+
+    const step = animationSteps[stepIndex];
+    ball.style.transform = `translate(${step.x}px, ${step.y}px)`;
+    stepIndex++;
+    setTimeout(animateBall, 50); // 0.05초마다 애니메이션 진행
+  }
+
+  animateBall();
+}
+
+// 시작 버튼 클릭 시
+startButton.addEventListener('click', () => {
+  const isValid = createLadder();
+  if (!isValid) return;
+
+  const randomStartIndex = Math.floor(Math.random() * numLines);
+  calculateAndAnimateResult(randomStartIndex);
+});
+
+  </script>
+</body>
+</html>
