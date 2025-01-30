@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const match = dateString.match(/투입기간\s*:\s*(\d{4}\.\d{2}\.\d{2})~(\d{4}\.\d{2}\.\d{2})/);
             if (match) {
                 const [, startDate, endDate] = match;
-                return `투입기간 : ${startDate} ~ ${endDate}`;
+                return `${startDate.replace(/\./g, '년 ')}월 ~ ${endDate.replace(/\./g, '년 ')}월`;
             }
             return dateString;
         }
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const sectionHeader = document.createElement('div');
         sectionHeader.classList.add('section-header');
         sectionHeader.innerHTML = `
-            <h2>내가 걸어온 ${calculateProjectYears()}년의 발자취</h2>
+            <h2>${calculateProjectYears()}년간의 전문성, 나의 개발 여정</h2>
         `;
         timeline.appendChild(sectionHeader);
 
@@ -134,7 +134,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <p class="date">${formattedDate}</p>
                     ${item.env ? `
                     <div class="timeline-project-details">
-                        ${item.env.map(env => `<span class="project-env-tag">${env}</span>`).join('')}
+                        <p class="project-env-description">
+                            프로젝트 환경: 
+                            ${item.env.map(env => `<span class="project-env-tag">${env}</span>`).join(', ')}
+                        </p>
                     </div>
                     ` : ''}
                 </div>
