@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             renderFunction();
         } catch (error) {
-            console.error('Rendering error:', error);
             setTimeout(() => safeRender(renderFunction), 100);
         }
     }
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const timelineContainer = document.querySelector('.timeline');
         
         if (!timelineSection || !timelineContainer) {
-            console.error('Timeline elements not found');
             return;
         }
 
@@ -23,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const timelineItems = Array.from(timelineContainer.querySelectorAll('.timeline-item'));
         
         if (timelineItems.length === 0) {
-            console.warn('No timeline items found');
             return;
         }
 
@@ -86,8 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 .map(item => extractYear(item.date))
                 .filter(Boolean)
         )].sort((a, b) => a - b);
-
-        console.log('Unique Years:', uniqueYears);  // Debug log
 
         // Create year markers for all unique years
         const yearMarkerElements = uniqueYears.map(year => {
@@ -174,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     yearMarker.style.transform = 'translate(-50%, -50%)';
                     yearMarker.style.opacity = '1';
                 } else {
-                    console.warn(`No corresponding item found for year ${year}`);
                 }
             });
         };
@@ -212,7 +206,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const container = document.querySelector(category.selector);
             
             if (!container) {
-                console.warn(`Skills container not found: ${category.selector}`);
                 return;
             }
 
@@ -254,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Check if projects exist
         if (typeof data === 'undefined' || !data.projects || data.projects.length === 0) {
-            console.warn('No projects data available');
             sectionHeader.querySelector('p').textContent = '현재 진행중인 프로젝트가 없습니다';
             return;
         }
@@ -309,27 +301,56 @@ document.addEventListener('DOMContentLoaded', function() {
         renderProjects();
     }
 
+    // Guestbook functionality has been removed
+    window.showGuestbook = function() {
+        alert('방명록 기능이 현재 비활성화되어 있습니다.');
+    };
+
+    // Navigation Link Handling
+    function setupNavLinks() {
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+
+                const targetId = link.getAttribute('href');
+                
+                
+                if(targetId.startsWith('http')) {
+                    return;
+                }
+
+                e.preventDefault();    
+                // Check if it's the guestbook link
+                if (targetId === '#') {
+                    // If it's the guestbook link, call showGuestbook
+                    if (typeof window.showGuestbook === 'function') {
+                        window.showGuestbook();
+                    } else {
+                    }
+                    return;
+                }
+                
+                // For other section links, scroll smoothly
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                }
+            });
+        });
+    }
+
     // 안전한 렌더링 호출
     safeRender(createTimeline);
     safeRender(renderSkills);
     safeRender(renderProjects);
     safeRender(updateProjectsFromTimeline);
-
-    // Smooth Scrolling
-    const navLinks = document.querySelectorAll('.nav-links a');
-    
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href');
-            const targetSection = document.querySelector(targetId);
-            
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        });
-    });
+    safeRender(setupNavLinks);
 
     // Typing Effect for Hero Text
     const heroText = document.querySelector('.hero-text h1');
@@ -479,7 +500,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
         const message = document.getElementById('message').value.trim();
-        
+        const submitBtn = document.getElementById('submitBtn');
+                
         // Basic form validation
         if (!name || !email || !message) {
             alert('모든 필드를 채워주세요.');
@@ -493,8 +515,44 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Simulate form submission (replace with actual backend logic)
-        alert('메시지가 성공적으로 전송되었습니다. 곧 연락드리겠습니다.');
+        const emailParams = {
+            service_id: "service_ejev0hq",
+            template_id: "template_0gvon9k",
+            user_id: "jPvwAhCjwh6v_VG_G",
+            accessToken: "fhTj8haQAD4gC-JK0J5oD",
+            template_params: {
+                name: name,
+                email: email,
+                message: message
+            }
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '전송 중...';
+
+        fetch('https://api.emailjs.com/api/v1.0/email/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(emailParams)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('메시지 전송에 실패했습니다.');
+            }
+            return response.text();
+        })
+        .then(result => {
+            alert('메시지가 성공적으로 전송되었습니다. 곧 연락드리겠습니다.');
+            contactForm.reset();
+        })
+        .finally(() => {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.textContent = '메시지 보내기';
+        });
+ 
         contactForm.reset();
     });
 
@@ -503,19 +561,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Mobile Menu Toggle
     function setupMobileMenu() {
-        console.log('Setting up mobile menu...');
-
         const navLinks = document.querySelector('.nav-links');
         const navWrapper = document.querySelector('.nav-wrapper');
         const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 
-        // Debugging checks
-        console.log('Nav Links:', navLinks);
-        console.log('Nav Wrapper:', navWrapper);
-        console.log('Mobile Menu Toggle:', mobileMenuToggle);
-
         if (!navLinks || !navWrapper || !mobileMenuToggle) {
-            console.error('One or more required elements are missing!');
             return;
         }
 
@@ -523,7 +573,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Prevent event from propagating
             event.stopPropagation();
             
-            console.log('Mobile menu toggle clicked');
             navLinks.classList.toggle('active');
             
             // Toggle menu icon between bars and times
@@ -532,33 +581,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? '<i class="fas fa-times"></i>' 
                 : '<i class="fas fa-bars"></i>';
             
-            console.log('Menu is now:', isMenuOpen ? 'OPEN' : 'CLOSED');
+            // Close mobile menu when a nav link is clicked
+            const navLinksItems = document.querySelectorAll('.nav-links a');
+            navLinksItems.forEach(link => {
+                link.addEventListener('click', function() {
+                    navLinks.classList.remove('active');
+                    mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!navWrapper.contains(event.target) && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
         }
 
         // Remove any existing event listeners to prevent multiple bindings
         mobileMenuToggle.removeEventListener('click', toggleMobileMenu);
         mobileMenuToggle.addEventListener('click', toggleMobileMenu);
-
-        // Close mobile menu when a nav link is clicked
-        const navLinksItems = document.querySelectorAll('.nav-links a');
-        navLinksItems.forEach(link => {
-            link.addEventListener('click', function() {
-                console.log('Nav link clicked, closing menu');
-                navLinks.classList.remove('active');
-                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            });
-        });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!navWrapper.contains(event.target) && navLinks.classList.contains('active')) {
-                console.log('Clicked outside menu, closing menu');
-                navLinks.classList.remove('active');
-                mobileMenuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-            }
-        });
-
-        console.log('Mobile menu setup complete');
     }
 
     // Ensure mobile menu setup runs after DOM is fully loaded
@@ -567,4 +610,46 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         setupMobileMenu();
     }
+
+    // Rainbow Text Effect for Footer
+    function rainbowText(element) {
+        // Ensure the element exists
+        if (!element) return;
+
+        // Store original text
+        const originalText = element.textContent;
+        
+        // Clear existing content
+        element.innerHTML = '';
+        
+        // Create spans for each character with space
+        originalText.split('').forEach((char, index) => {
+            const span = document.createElement('span');
+            span.textContent = char === ' ' ? '\u00A0' : char; // Use non-breaking space for spaces
+            span.style.display = 'inline-block';
+            span.style.marginRight = char === ' ' ? '0.3em' : '0'; // Reduce margin for spaces
+            span.style.animationDelay = `${index * 0.1}s`; // Stagger the animation
+            element.appendChild(span);
+        });
+    }
+
+    // Dynamic Copyright Year
+    function updateCopyrightYear() {
+        const footerP = document.querySelector('footer p');
+        if (footerP) {
+            const currentYear = new Date().getFullYear();
+            footerP.innerHTML = `&copy;${currentYear} ` + footerP.innerHTML;
+        }
+    }
+
+    // Ensure the function runs after DOM is fully loaded
+    window.addEventListener('load', updateCopyrightYear);
+
+    // Ensure the function runs after DOM is fully loaded
+    window.addEventListener('load', () => {
+        const footerText = document.querySelector('footer p');
+        if (footerText) {
+            rainbowText(footerText);
+        }
+    });
 });

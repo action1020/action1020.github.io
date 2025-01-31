@@ -676,10 +676,8 @@ body {
 }
 
 .timeline-content h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: var(--accent-color);
-    margin-bottom: 0.75rem;
+    color: #4ECDC4; /* Primary color with slight variation */
+    margin-bottom: 0.5rem;
 }
 
 .timeline-content .date {
@@ -704,22 +702,25 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
 }
 
 .project-env-tag {
-    background-color: var(--background-dark-secondary);
-    color: var(--primary-color);
+    background-color: var(--background-dark);
+    color: var(--accent-color);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-    line-height: 1;
-    transition: background-color 0.3s ease;
+    border-radius: 3px;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
 }
 
 .project-env-tag:hover {
-    background-color: rgba(78, 205, 196, 0.1);
+    background-color: var(--accent-color);
+    color: var(--background-dark);
 }
 
 /* Responsive Timeline */
@@ -746,6 +747,7 @@ body {
 .contact-section {
     padding: 6rem 0;
     background-color: var(--background-dark-secondary);
+    margin-bottom: 20px;
 }
 
 .contact-form-container {
@@ -821,20 +823,52 @@ body {
     margin-bottom: 0.5rem;
 }
 
-.social-links {
+.contact-info .social-links {
     display: flex;
-    gap: 1.5rem;
-    margin-top: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    gap: 15px;
 }
 
-.social-icon {
-    color: var(--text-secondary);
+.contact-info .social-icon {
+    color: var(--text-color-secondary);
     font-size: 1.5rem;
-    transition: color 0.3s;
+    transition: color 0.3s ease;
 }
 
-.social-icon:hover {
-    color: var(--accent-color);
+.contact-info .social-icon:hover {
+    color: var(--primary-color);
+}
+
+.contact-additional-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.contact-additional-info .qr-code-container {
+    margin-bottom: 15px;
+}
+
+.contact-additional-info .contact-info {
+    max-width: 300px;
+}
+
+.qr-code-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.qr-code {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 1024px) {
@@ -1118,4 +1152,37 @@ body {
     .nav-links.active {
         display: flex; /* Show when active */
     }
+}
+
+/* Guestbook styles have been removed */
+
+footer {
+    margin-bottom: 10px;
+}
+
+footer p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+footer p span {
+    display: inline-block;
+    animation: rainbow 2s infinite;
+    animation-fill-mode: forwards;
+    margin-right: 0.1em;
+}
+
+footer p span:last-child {
+    margin-right: 0;
+}
+
+@keyframes rainbow {
+    0%, 100% { color: #4ECDC4; }  /* Teal - primary color from theme */
+    20% { color: #86eb57; }        /* Accent green */
+    40% { color: #5D3FD3; }        /* Deep Purple */
+    60% { color: #0077BE; }        /* Deep Blue */
+    80% { color: #9400D3; }        /* Violet */
 }
