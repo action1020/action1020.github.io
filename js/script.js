@@ -8,6 +8,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to format date with Korean text
+    function formatDate(dateString) {
+        // Handle range dates with or without day precision
+        const rangeMatch = dateString.match(/투입기간\s*:\s*(\d{4}\.\d{2}(?:\.\d{2})?)\s*~\s*(\d{4}\.\d{2}(?:\.\d{2})?)/);
+        if (rangeMatch) {
+            const [, startDate, endDate] = rangeMatch;
+            // Function to format date with optional day precision
+            const formatPart = (date) => {
+                const parts = date.split('.');
+                return parts.length === 3 
+                    ? `${parts[0]}년 ${parts[1]}월 ${parts[2]}일`
+                    : `${parts[0]}년 ${parts[1]}월`;
+            };
+            return `투입기간 : ${formatPart(startDate)} ~ ${formatPart(endDate)}`;
+        }
+
+        // Handle single dates with day
+        const singleDateMatch = dateString.match(/(\d{4}\.\d{2}\.\d{2})/);
+        if (singleDateMatch) {
+            const [, date] = singleDateMatch;
+            const [year, month, day] = date.split('.');
+            return `${year}년 ${month}월 ${day}일`;
+        }
+
+        return dateString;
+    }
+
     // 중앙선 위치 조정 함수
     function adjustCenterLine() {
         const timelineSection = document.querySelector('.timeline-section');
@@ -58,16 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             return '';
-        }
-
-        // Function to format date with Korean text
-        function formatDate(dateString) {
-            const match = dateString.match(/투입기간\s*:\s*(\d{4}\.\d{2}\.\d{2})~(\d{4}\.\d{2}\.\d{2})/);
-            if (match) {
-                const [, startDate, endDate] = match;
-                return `${startDate.replace(/\./g, '년 ')}월 ~ ${endDate.replace(/\./g, '년 ')}월`;
-            }
-            return dateString;
         }
 
         // Reverse the timeline data to start from the last item
@@ -255,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const projectCount = data.projects.length;
         sectionHeader.querySelector('p').textContent = 
             projectCount > 0 
-                ? `현재 진행중인 프로젝트 총 ${projectCount}건` 
+                ? `최근 종료된 프로젝트 ${projectCount}건` 
                 : '현재 진행중인 프로젝트가 없습니다';
         
         // 프로젝트를 역순으로 렌더링
@@ -290,8 +307,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // 마지막 3개 타임라인 항목을 projects 형식으로 변환
         const dynamicProjects = lastThreeTimelineProjects.map(project => ({
             title: project.title || '미지정 프로젝트',
-            description: project.date || '상세 정보 없음',
-            skill: project.env || []
+            description: formatDate(project.date) || '상세 정보 없음',
+            skill: (project.env || []).map(skill => skill.toUpperCase())
         }));
 
         // projects 배열 초기화 및 동적 프로젝트 추가
