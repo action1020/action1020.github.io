@@ -362,32 +362,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Guestbook Modal Functionality
+    // 방명록 모달 기능 제거
     function setupGuestbookModal() {
-        const guestbookLink = document.getElementById('guestbook-link');
-        const guestbookModal = document.getElementById('guestbook-modal');
-        const closeModal = document.querySelector('.close-modal');
-        const guestbookIframe = guestbookModal.querySelector('iframe');
-
-        // Open modal
-        guestbookLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Reload iframe to reset its state
-            guestbookIframe.src = guestbookIframe.src;
-            guestbookModal.style.display = 'flex';  
-        });
-
-        // Close modal when clicking on close button
-        closeModal.addEventListener('click', () => {
-            guestbookModal.style.display = 'none';
-        });
-
-        // Close modal when clicking outside of it
-        window.addEventListener('click', (e) => {
-            if (e.target === guestbookModal) {
-                guestbookModal.style.display = 'none';
-            }
-        });
+        // 모달 기능 비활성화
+        console.log('Guestbook modal setup disabled');
     }
 
     // Ensure mobile menu setup runs after DOM is fully loaded
