@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Guestbook functionality has been removed
     window.showGuestbook = function() {
-        alert('방명록 기능이 현재 비활성화되어 있습니다.');
+        
     };
 
     // Navigation Link Handling
@@ -360,6 +360,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    }
+
+    // Guestbook Modal Functionality
+    function setupGuestbookModal() {
+        const guestbookLink = document.getElementById('guestbook-link');
+        const guestbookModal = document.getElementById('guestbook-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const guestbookIframe = guestbookModal.querySelector('iframe');
+
+        // Open modal
+        guestbookLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Reload iframe to reset its state
+            guestbookIframe.src = guestbookIframe.src;
+            guestbookModal.style.display = 'flex';  
+        });
+
+        // Close modal when clicking on close button
+        closeModal.addEventListener('click', () => {
+            guestbookModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', (e) => {
+            if (e.target === guestbookModal) {
+                guestbookModal.style.display = 'none';
+            }
+        });
+    }
+
+    // Ensure mobile menu setup runs after DOM is fully loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupGuestbookModal);
+    } else {
+        setupGuestbookModal();
     }
 
     // 안전한 렌더링 호출
