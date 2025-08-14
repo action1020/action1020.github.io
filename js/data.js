@@ -256,6 +256,11 @@ const data = {
             "title": "한화에어로스페이스 One-ERP 차세대 구축 사업",
             "date": "투입기간 : 2023.11.20 ~ 2025.02.14",
             "env": ["JAVA/JSP", "Linux", "Tibero 8", "Jenkins", "WebTob/Jeus 7", "NEXACRO N", "Nexus", "Nginx"] 
+        },
+        {
+            "title": "KB카드 내부업무시스템 통합 프레임워크 구축 사업",
+            "date": "투입기간 : 2023.11.20 ~ 2025.02.14",
+            "env": ["JAVA/JSP", "Linux", "Oracle 19c", "Docker", "Kubernetes", "Weblogic/OHS", "VueJS 3", "Nexus"] 
         }
     ],
     projects: []
