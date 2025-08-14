@@ -259,7 +259,7 @@ const data = {
         },
         {
             "title": "KB카드 내부업무시스템 통합 프레임워크 구축 사업",
-            "date": "투입기간 : 2023.11.20 ~ 2025.02.14",
+            "date": "투입기간 : 2025.04.24 ~ 2025.08.22",
             "env": ["JAVA/JSP", "Linux", "Oracle 19c", "Docker", "Kubernetes", "Weblogic/OHS", "VueJS 3", "Nexus"] 
         }
     ],
