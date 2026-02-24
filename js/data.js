@@ -261,6 +261,11 @@ const data = {
             "title": "KB카드 내부업무시스템 통합 프레임워크 구축 사업",
             "date": "투입기간 : 2025.04.24 ~ 2025.08.22",
             "env": ["JAVA/JSP", "Linux", "Oracle 19c", "Docker", "Kubernetes", "Weblogic/OHS", "VueJS 3", "Nexus"] 
+        },
+        {
+            "title": "현대자동차 GSPS 구축 사업",
+            "date": "투입기간 : 2025.10.29 ~ 2026.02.13",
+            "env": ["JAVA/JSP", "Linux", "PostgreSQL 8", "Hcloud", "SpringBatch", "Tomcat", "ReactJS", "Nexus"] 
         }
     ],
     projects: []
